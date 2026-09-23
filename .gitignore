@@ -1,0 +1,16 @@
+# Visual Studio
+.vs/
+bin/
+obj/
+
+# User-specific
+*.user
+*.suo
+
+# Offline packages/installers - keep LOCAL, don't push to GitHub
+OfflineSetup/NuGetFeed/
+OfflineSetup/Installers/
+OfflineSetup/Docker/images/
+
+# Temporary/generated files
+*.log

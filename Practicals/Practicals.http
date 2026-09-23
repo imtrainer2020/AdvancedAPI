@@ -1,0 +1,11 @@
+@Practicals_HostAddress = http://localhost:5055
+
+GET {{Practicals_HostAddress}}/todos/
+Accept: application/json
+
+###
+
+GET {{Practicals_HostAddress}}/todos/1
+Accept: application/json
+
+###

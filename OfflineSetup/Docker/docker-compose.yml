@@ -1,0 +1,95 @@
+services:
+  sqlserver:
+    image: api-training/sqlserver:2026
+    ports:
+      - "1433:1433"
+    environment:
+      ACCEPT_EULA: "Y"
+      MSSQL_SA_PASSWORD: "Sa@123456"
+      MSSQL_PID: "Developer"
+    volumes:
+      - sqlserver-data:/var/opt/mssql
+    restart: unless-stopped
+
+  keycloak:
+    image: api-training/keycloak:26.7.3
+    command: start-dev
+    ports:
+      - "8080:8080"
+    environment:
+      KC_BOOTSTRAP_ADMIN_USERNAME: admin
+      KC_BOOTSTRAP_ADMIN_PASSWORD: Admin@123456
+    volumes:
+      - keycloak-data:/opt/keycloak/data
+    restart: unless-stopped
+
+  wiremock:
+    image: api-training/wiremock:offline
+    ports:
+      - "8081:8080"
+    volumes:
+      - ./wiremock:/home/wiremock
+    restart: unless-stopped
+
+  prometheus:
+    image: api-training/prometheus:3.13.3
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - prometheus-data:/prometheus
+    restart: unless-stopped
+
+  grafana:
+    image: api-training/grafana:13.0.2
+    ports:
+      - "3000:3000"
+    environment:
+      GF_SECURITY_ADMIN_USER: admin
+      GF_SECURITY_ADMIN_PASSWORD: admin
+    volumes:
+      - grafana-data:/var/lib/grafana
+      - ./grafana/provisioning:/etc/grafana/provisioning:ro
+    restart: unless-stopped
+
+  jaeger:
+    image: api-training/jaeger:2.20.0
+    ports:
+      - "16686:16686"
+      - "4317:4317"
+      - "4318:4318"
+    restart: unless-stopped
+
+  otel-collector:
+    image: api-training/otelcol:offline
+    command: ["--config=/etc/otelcol/config.yaml"]
+    ports:
+      - "4319:4317"
+      - "4320:4318"
+      - "8889:8889"
+    volumes:
+      - ./otel/config.yaml:/etc/otelcol/config.yaml:ro
+    restart: unless-stopped
+
+  kong:
+    image: api-training/kong:3.10.0.2
+    environment:
+      KONG_DATABASE: "off"
+      KONG_DECLARATIVE_CONFIG: /etc/kong/kong.yml
+      KONG_PROXY_ACCESS_LOG: /dev/stdout
+      KONG_ADMIN_ACCESS_LOG: /dev/stdout
+      KONG_PROXY_ERROR_LOG: /dev/stderr
+      KONG_ADMIN_ERROR_LOG: /dev/stderr
+      KONG_ADMIN_LISTEN: 0.0.0.0:8001
+    ports:
+      - "8000:8000"
+      - "8001:8001"
+    volumes:
+      - ./kong/kong.yml:/etc/kong/kong.yml:ro
+    restart: unless-stopped
+
+volumes:
+  sqlserver-data:
+  keycloak-data:
+  prometheus-data:
+  grafana-data:
