@@ -1,11 +1,11 @@
-@Practicals_HostAddress = http://localhost:5055
+@Practicals_HostAddress = http://localhost:5055/api
 
-GET {{Practicals_HostAddress}}/todos/
+GET {{Practicals_HostAddress}}/day1/
 Accept: application/json
 
 ###
 
-GET {{Practicals_HostAddress}}/todos/1
+GET {{Practicals_HostAddress}}/day1/1
 Accept: application/json
 
 ###
