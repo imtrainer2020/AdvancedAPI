@@ -16,6 +16,11 @@ builder.Services.AddSwaggerGen(options =>
     });
 });
 
+builder.Services.AddOpenApi(options =>
+{
+    options.OpenApiVersion = Microsoft.OpenApi.OpenApiSpecVersion.OpenApi3_0;
+});
+
 var app = builder.Build();
 
 app.UseSwagger();
@@ -25,6 +30,9 @@ app.UseSwaggerUI(options =>
     options.SwaggerEndpoint("/swagger/v1/swagger.json", "Advanced API v1");
     options.RoutePrefix = "swagger";
 });
+
+app.MapOpenApi("/openapi/{documentName}.json");
+app.MapOpenApi("/openapi/{documentName}.yaml");
 
 app.MapControllers();
 
