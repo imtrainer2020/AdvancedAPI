@@ -14,3 +14,4 @@ OfflineSetup/Docker/images/
 
 # Temporary/generated files
 *.log
+/.vs_backup
