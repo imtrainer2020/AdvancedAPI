@@ -9,3 +9,53 @@ GET {{Practicals_HostAddress}}/day1/1
 Accept: application/json
 
 ###
+
+@base = http://localhost:5055
+@studentId = 3
+
+### Existing products
+GET {{base}}/api/Day1
+
+### Binding
+GET {{base}}/api/Day1/demo/binding/7?name=Asha
+X-Client: Classroom
+
+### Read/filter
+GET {{base}}/api/Day1/students?name=asha
+
+### Create: 201, then repeat to see 409
+POST {{base}}/api/Day1/students
+Content-Type: application/json
+
+{ "name": "Neha", "email": "neha@lab.local", "courseId": 1 }
+
+### Follow Location manually, or update @studentId
+GET {{base}}/api/Day1/students/{{studentId}}
+
+### Replace all editable fields
+PUT {{base}}/api/Day1/students/{{studentId}}
+Content-Type: application/json
+
+{ "name": "Neha Patel", "email": "neha@lab.local", "courseId": 2 }
+
+### Name-only change
+PATCH {{base}}/api/Day1/students/{{studentId}}/name
+Content-Type: application/json
+
+{ "name": "Neha Shah" }
+
+### Remove; repeat to see 404
+DELETE {{base}}/api/Day1/students/{{studentId}}
+
+### Invalid DTO: 400
+POST {{base}}/api/Day1/students
+Content-Type: application/json
+
+{ "name": "N", "email": "bad", "courseId": 1 }
+
+### Parent-child resource
+GET {{base}}/api/Day1/units/1/personnel
+
+### Lifetimes
+GET {{base}}/api/Day1/demo/lifetimes
+

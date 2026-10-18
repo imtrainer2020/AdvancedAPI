@@ -1,4 +1,6 @@
 using Microsoft.OpenApi;
+using Practicals.Services.Day1;
+using static Practicals.Services.Day1.LifetimeDemo;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -21,7 +23,21 @@ builder.Services.AddOpenApi(options =>
     options.OpenApiVersion = Microsoft.OpenApi.OpenApiSpecVersion.OpenApi3_0;
 });
 
+builder.Services.AddTransient<TransientStamp>();
+builder.Services.AddScoped<ScopedStamp>();
+builder.Services.AddSingleton<SingletonStamp>();
+builder.Services.AddScoped<IStudentService, StudentService>();
+
 var app = builder.Build();
+
+//app.Use(async (context, next) =>
+//{
+//    app.Logger.LogInformation("IN  {Method} {Path}",
+//        context.Request.Method, context.Request.Path);
+//    context.Response.Headers["X-Day1-Demo"] = "pipeline";
+//    await next();
+//    app.Logger.LogInformation("OUT {Status}", context.Response.StatusCode);
+//});
 
 app.UseSwagger();
 
