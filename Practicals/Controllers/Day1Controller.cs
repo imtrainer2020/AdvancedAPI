@@ -12,6 +12,30 @@ namespace Practicals.Controllers
     [ApiController]
     public class Day1Controller : ControllerBase
     {
+
+        #region "Read Environment Details & Error Demo"
+
+        [HttpGet("demo/environment")]
+        public IActionResult EnvironmentDemo([FromServices] IConfiguration config,
+            [FromServices] IWebHostEnvironment environment)
+        {
+            return Ok(new
+            {
+                environment = environment.EnvironmentName,
+                message = config["Day1Message"]
+            });
+        }
+
+        [HttpGet("demo/error")]
+        public IActionResult ErrorDemo()
+        {
+            throw new InvalidOperationException("Intentional Day 1 classroom error.");
+        }
+
+        #endregion
+
+        #region "Routes and Different Responses"
+
         [HttpGet]
         public IActionResult GetProducts()
         {
@@ -37,23 +61,6 @@ namespace Practicals.Controllers
             });
 
         }
-
-        [HttpGet("demo/environment")]
-        public IActionResult EnvironmentDemo([FromServices] IConfiguration config,
-            [FromServices] IWebHostEnvironment environment)
-        {
-            return Ok(new
-            {
-                environment = environment.EnvironmentName,
-                message = config["Day1Message"]
-            });
-        }
-
-        //[HttpGet("demo/error")]
-        //public IActionResult ErrorDemo()
-        //{
-        //    throw new InvalidOperationException("Intentional Day 1 classroom error.");
-        //}
 
         [HttpGet("units")]
         public IActionResult GetUnits() => Ok(Day1Store.Units);
@@ -99,6 +106,9 @@ namespace Practicals.Controllers
             return BadRequest(new { message = "Choose 401 or 403 for this demo." });
         }
 
+        #endregion
+
+        #region "Model & DTO Binding"
         private static StudentDto ToDto(Student s)
     => new StudentDto(s.Id, s.Name, s.Email, s.CourseId);
 
@@ -125,6 +135,10 @@ namespace Practicals.Controllers
             if (student == null) return NotFound();
             return Ok(ToDto(student));
         }
+
+        #endregion
+
+        #region "CRUD"
 
         [HttpPost("students")]
         public ActionResult<StudentDto> CreateStudent([FromBody] CreateStudentDto dto)
@@ -180,6 +194,18 @@ namespace Practicals.Controllers
             return NoContent();
         }
 
+
+
+        #endregion
+
+        #region "Dependency Injection"
+
+        private readonly IStudentService _students;
+        public Day1Controller(IStudentService students)
+        {
+            _students = students;
+        }
+
         [HttpGet("demo/lifetimes")]
         public IActionResult Lifetimes(
             [FromServices] TransientStamp t1, [FromServices] TransientStamp t2,
@@ -194,11 +220,9 @@ namespace Practicals.Controllers
             });
         }
 
-        private readonly IStudentService _students;
-        public Day1Controller(IStudentService students)
-        {
-            _students = students;
-        }
+        #endregion
+
+        #region "CRUD with DI"
 
         [HttpGet("students_di")]
         public ActionResult<List<StudentDto>> GetStudentsDI([FromQuery] string? name)
@@ -240,6 +264,6 @@ namespace Practicals.Controllers
         public IActionResult DeleteStudentDI(int id)
             => ToHttp(_students.Delete(id));
 
-
+        #endregion
     }
 }

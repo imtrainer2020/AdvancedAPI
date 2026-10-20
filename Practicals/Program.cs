@@ -1,10 +1,35 @@
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi;
 using Practicals.Services.Day1;
+using Practicals.Services.Day2;
 using static Practicals.Services.Day1.LifetimeDemo;
+
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddControllers();
+//builder.Services.AddControllers();
+
+#region "2.6 Refuse bad data and return safe errors"
+
+builder.Services.AddControllers().ConfigureApiBehaviorOptions(o =>
+{
+    o.InvalidModelStateResponseFactory = c => {
+        var p = new ValidationProblemDetails(c.ModelState)
+        {
+            Status = 400,
+            Title = "Check your inputs.",
+            Instance = c.HttpContext.Request.Path
+        };
+        p.Extensions["traceId"] = c.HttpContext.TraceIdentifier;
+        return new BadRequestObjectResult(p) { ContentTypes = { "application/problem+json" } };
+    };
+});
+
+builder.Services.AddProblemDetails();
+builder.Services.AddExceptionHandler<Day2Errors>();
+
+#endregion
 
 builder.Services.AddEndpointsApiExplorer();
 
@@ -28,7 +53,13 @@ builder.Services.AddScoped<ScopedStamp>();
 builder.Services.AddSingleton<SingletonStamp>();
 builder.Services.AddScoped<IStudentService, StudentService>();
 
+builder.Services.AddDbContext<CampusDb>(o => o.UseSqlServer(
+    builder.Configuration.GetConnectionString("Day2Db")));
+builder.Services.AddScoped<StudentDbService>();
+
 var app = builder.Build();
+
+#region "1.3 Request Pipeline"
 
 //app.Use(async (context, next) =>
 //{
@@ -38,6 +69,14 @@ var app = builder.Build();
 //    await next();
 //    app.Logger.LogInformation("OUT {Status}", context.Response.StatusCode);
 //});
+
+#endregion
+
+#region "2.6 Refuse bad data and return safe errors"
+
+app.UseExceptionHandler();
+
+#endregion
 
 app.UseSwagger();
 
