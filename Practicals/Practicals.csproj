@@ -7,7 +7,12 @@
     <InvariantGlobalization>false</InvariantGlobalization>
     <!--<PublishAot>true</PublishAot>-->
     <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
+    <UserSecretsId>4b39dc00-df7f-44b7-b410-c0d4c21e7265</UserSecretsId>
   </PropertyGroup>
+
+  <ItemGroup>
+    <Content Include="BrowserClient\index.html" />
+  </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="coverlet.collector" Version="10.0.1">
@@ -28,6 +33,7 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
+    <PackageReference Include="Microsoft.Extensions.Http.Polly" Version="10.0.13" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="18.10.1" />
     <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.24.2-preview.1" />
     <PackageReference Include="OpenTelemetry.Exporter.OpenTelemetryProtocol" Version="1.19.1" />
@@ -44,7 +50,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Services\Day3\" />
+    <Folder Include="wwwroot\" />
   </ItemGroup>
   
 </Project>

@@ -1,0 +1,23 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>CORS Lab</title>
+</head>
+<body>
+    <input id="t" size="60" placeholder="paste raw token">
+    <button id="go">Call /me</button>
+    <pre id="o"></pre>
+
+    <script>
+        document.getElementById('go').onclick = async () => {
+          try {
+            const r = await fetch('http://localhost:5055/api/Day3/me',
+              { headers: { Authorization: 'Bearer ' + document.getElementById('t').value } });
+            document.getElementById('o').textContent = r.status + ' ' + await r.text();
+          } catch (e) { document.getElementById('o').textContent = 'Blocked by browser: ' + e; }
+        };
+    </script>
+
+</body>
+</html>
