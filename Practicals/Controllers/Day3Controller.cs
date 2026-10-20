@@ -74,6 +74,7 @@ namespace Practicals.Controllers
 
         #endregion
 
+        #region "3.7 Testing APIs"
 
         private readonly IHttpClientFactory _clientFactory;
         private readonly IWebHostEnvironment _env;
@@ -155,6 +156,8 @@ namespace Practicals.Controllers
                 return StatusCode(504, new { Error = "Polly Timeout: Request cancelled because server took more than 3 seconds." });
             }
         }
+
+        #endregion
 
     }
 }
