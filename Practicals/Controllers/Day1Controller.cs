@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Practicals.Models;
 using Practicals.Services.Day1;
+using static Practicals.Models.Day1;
 
 
 namespace Practicals.Controllers
@@ -237,8 +238,7 @@ namespace Practicals.Controllers
                 return NotFound();
             existing.Name = dto.Name;
             existing.Price = dto.Price;
-            existing.Category = dto.Category;
-            existing.Stock = dto.stock;
+            existing.Stock = dto.Stock;
             return Ok();
         }
     }

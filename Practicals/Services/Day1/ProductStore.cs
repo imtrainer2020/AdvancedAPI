@@ -1,4 +1,5 @@
 ﻿using Practicals.Models;
+using static Practicals.Models.Day1;
 
 namespace Practicals.Services.Day1
 {
