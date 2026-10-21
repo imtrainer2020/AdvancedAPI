@@ -44,7 +44,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Services\Day1\" />
     <Folder Include="Services\Day2\" />
     <Folder Include="Services\Day3\" />
   </ItemGroup>

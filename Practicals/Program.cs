@@ -1,4 +1,5 @@
 using Microsoft.OpenApi;
+using Practicals.Services.Day1;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -21,6 +22,8 @@ builder.Services.AddOpenApi(options =>
     options.OpenApiVersion = Microsoft.OpenApi.OpenApiSpecVersion.OpenApi3_0;
 });
 
+builder.Services.AddSingleton<ProductStore>();
+
 var app = builder.Build();
 
 app.UseSwagger();
@@ -31,8 +34,6 @@ app.UseSwaggerUI(options =>
     options.RoutePrefix = "swagger";
 });
 
-app.MapOpenApi("/openapi/{documentName}.json");
-app.MapOpenApi("/openapi/{documentName}.yaml");
 
 app.MapControllers();
 

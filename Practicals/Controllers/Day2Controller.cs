@@ -7,5 +7,9 @@ namespace Practicals.Controllers
     [ApiController]
     public class Day2Controller : ControllerBase
     {
+        public Day2Controller()
+        {
+                
+        }
     }
 }
