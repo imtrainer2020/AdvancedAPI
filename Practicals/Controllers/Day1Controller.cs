@@ -11,31 +11,6 @@ namespace Practicals.Controllers
     [ApiController]
     public class Day1Controller : ControllerBase
     {
-        //[HttpGet]
-        //public IActionResult GetProducts()
-        //{
-        //    var products = new[]
-        //    {
-        //        new { Id = 1, Name = "Laptop", Price = 75000 },
-        //        new { Id = 2, Name = "Mouse", Price = 1500 }
-        //    };
-
-        //    return Ok(products);
-        //}
-
-        //[HttpGet("{id}")]
-        //public IActionResult GetProduct(int id)
-        //{
-        //    var product = new
-        //    {
-        //        Id = id,
-        //        Name = "Laptop",
-        //        Price = 75000
-        //    };
-
-        //    return Ok(product);
-        //}
-
         [HttpGet("~/api/demo/env")]
         public IActionResult GetEnvironment([FromServices] IConfiguration config,
                                     [FromServices] IWebHostEnvironment env)
@@ -138,21 +113,21 @@ namespace Practicals.Controllers
 
         #region "CRUD with Model Binding and DTO"
 
-        private static readonly List<Student> _students =
+        private static readonly List<Day1.Student> _students =
         [
             new() { Id = 1, FullName = "Asha Mehta", Email = "asha@example.com", CourseId = 1, InternalNotes = "Scholarship" },
             new() { Id = 2, FullName = "Ravi Kumar", Email = "ravi@example.com", CourseId = 2, InternalNotes = "Late fees" }
         ];
         private static int _nextStudentId = 3;
-        private static StudentDto ToConvertDto(Student s) =>
+        private static Day1.StudentDto ToConvertDto(Day1.Student s) =>
             new(s.Id, s.FullName, s.Email, s.CourseId);
 
         [HttpGet("~/api/students")]
-        public ActionResult<IEnumerable<StudentDto>> GetStudents()
+        public ActionResult<IEnumerable<Day1.StudentDto>> GetStudents()
             => Ok(_students.Select(ToConvertDto));
 
         [HttpGet("~/api/students/{id:int}")]
-        public ActionResult<StudentDto> GetStudentById(int id)
+        public ActionResult<Day1.StudentDto> GetStudentById(int id)
         {
             var s = _students.FirstOrDefault(x => x.Id == id);
             if (s is null) return NotFound();
@@ -160,7 +135,7 @@ namespace Practicals.Controllers
         }
 
         [HttpPost("~/api/students")]
-        public ActionResult<StudentDto> CreateStudent([FromBody] CreateStudentDto dto)
+        public ActionResult<Day1.StudentDto> CreateStudent([FromBody] CreateStudentDto dto)
         {
             if (_students.Any(x => x.Email.Equals(dto.Email, StringComparison.OrdinalIgnoreCase)))
                 return Conflict(new ProblemDetails
@@ -170,7 +145,7 @@ namespace Practicals.Controllers
                     Detail = $"A student with email {dto.Email} already exists."
                 });
 
-            var s = new Student { Id = _nextStudentId++, FullName = dto.FullName, Email = dto.Email, CourseId = dto.CourseId };
+            var s = new Day1.Student { Id = _nextStudentId++, FullName = dto.FullName, Email = dto.Email, CourseId = dto.CourseId };
             _students.Add(s);
             return CreatedAtAction(nameof(GetStudentById), new { id = s.Id }, ToConvertDto(s));   // 201 + Location
         }
@@ -211,9 +186,6 @@ namespace Practicals.Controllers
             return NoContent();
         }
 
-
-        #endregion
-
         [HttpPost("~/api/addproductsdto")]
         public IActionResult AddProduct(CreateProductDto dto)
         {
@@ -241,5 +213,27 @@ namespace Practicals.Controllers
             existing.Stock = dto.Stock;
             return Ok();
         }
+
+        #endregion
+
+        #region "API Versioning"
+        
+        // GET /api/v1/day1/products  -> v1 shape (matches our existing model)
+        [HttpGet("/api/v1/day1/products")]
+        public ActionResult<object> GetProductsV1()
+            => Ok(_store.Products.Select(p => new { p.Id, p.Name, p.Price }));
+
+        // GET /api/v2/day1/products  -> v2 shape (BREAKING: price object, not a number)
+        [HttpGet("/api/v2/day1/products")]
+        public ActionResult<object> GetProductsV2()
+            => Ok(_store.Products.Select(p => new
+            {
+                p.Id,
+                p.Name,
+                Price = new { amount = p.Price, currency = "INR" }
+            }));
+
+        #endregion
+
     }
 }

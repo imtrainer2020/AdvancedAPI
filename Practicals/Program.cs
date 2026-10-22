@@ -1,7 +1,17 @@
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi;
 using Practicals.Services.Day1;
+using Practicals.Services.Day2;
+using System.Text;
+using static Practicals.Services.Day2.DILifespans;
 
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Services.AddDbContext<Day2DbContext>(options =>
+    options.UseSqlServer(builder.Configuration.GetConnectionString("Day2Db"))
+           .LogTo(Console.WriteLine, Microsoft.Extensions.Logging.LogLevel.Information));
 
 builder.Services.AddControllers();
 
@@ -23,6 +33,13 @@ builder.Services.AddOpenApi(options =>
 });
 
 builder.Services.AddSingleton<ProductStore>();
+
+builder.Services.AddTransient<TransientValue>();
+builder.Services.AddScoped<ScopedValue>();
+builder.Services.AddSingleton<SingletonValue>();
+
+
+
 
 var app = builder.Build();
 
