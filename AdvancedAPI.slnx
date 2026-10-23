@@ -1,3 +1,4 @@
 <Solution>
+  <Project Path="Day3.Tests/Day3.Tests.csproj" Id="e6b2994d-a1da-4b39-b923-ca446d02fd11" />
   <Project Path="Practicals/Practicals.csproj" Id="e54b3fd0-d542-4d2d-b2fd-15c9bd147d61" />
 </Solution>

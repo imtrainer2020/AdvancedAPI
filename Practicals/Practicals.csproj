@@ -45,8 +45,6 @@
 
   <ItemGroup>
     <Folder Include="Migrations\" />
-    <Folder Include="Services\Day3\" />
-    <Folder Include="Services\Day3\" />
   </ItemGroup>
   
 </Project>
